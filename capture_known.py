@@ -1,22 +1,13 @@
 import os
 import cv2
-import argparse
 
 def main():
-    parser = argparse.ArgumentParser(
-        description="Capture images for a new known face."
-    )
-    parser.add_argument(
-        "--name", "-n", required=True,
-        help="Name of the person (will create known_faces/<name>/)"
-    )
-    parser.add_argument(
-        "--output", "-o", default="known_faces",
-        help="Base output directory"
-    )
-    args = parser.parse_args()
+    name = input("Enter the name of the person: ").strip()
+    output_dir = input("Enter the output directory (default: known_faces): ").strip()
+    if not output_dir:
+        output_dir = "known_faces"
 
-    person_dir = os.path.join(args.output, args.name)
+    person_dir = os.path.join(output_dir, name)
     os.makedirs(person_dir, exist_ok=True)
 
     cap = cv2.VideoCapture(0)
@@ -33,16 +24,16 @@ def main():
             break
 
         cv2.putText(frame,
-                    f"{args.name}: {count} images",
+                    f"{name}: {count} images",
                     (10, 30), cv2.FONT_HERSHEY_SIMPLEX,
-                    1, (0,255,0), 2)
+                    1, (0, 255, 0), 2)
         cv2.imshow("Capture Known Faces", frame)
 
         key = cv2.waitKey(1)
         # SPACE = 32, ESC = 27
         if key == 32:
             img_path = os.path.join(person_dir,
-                                    f"{args.name}_{count+1}.jpg")
+                                    f"{name}_{count+1}.jpg")
             cv2.imwrite(img_path, frame)
             print(f"🖼️  Saved {img_path}")
             count += 1
@@ -55,4 +46,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
